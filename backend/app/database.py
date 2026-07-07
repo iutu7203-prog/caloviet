@@ -3,10 +3,13 @@ import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
 
-# Railway/Heroku cấp DATABASE_URL dạng postgres://, SQLAlchemy cần postgresql://
+# Railway/Heroku cấp DATABASE_URL dạng postgres:// hoặc postgresql://,
+# ép về driver pg8000 (driver duy nhất khai báo trong requirements.txt)
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./caloviet.db")
 if DATABASE_URL.startswith("postgres://"):
-    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql+pg8000://", 1)
+elif DATABASE_URL.startswith("postgresql://"):
+    DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+pg8000://", 1)
 
 connect_args = {"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {}
 
