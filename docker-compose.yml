@@ -1,0 +1,21 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: caloviet
+      POSTGRES_PASSWORD: caloviet
+      POSTGRES_DB: caloviet
+    ports: ["5432:5432"]
+    volumes: ["pgdata:/var/lib/postgresql/data"]
+
+  backend:
+    build: ./backend
+    environment:
+      DATABASE_URL: postgresql://caloviet:caloviet@db:5432/caloviet
+      SECRET_KEY: dev-secret-doi-truoc-khi-deploy
+      CORS_ORIGINS: "*"
+    ports: ["8000:8000"]
+    depends_on: [db]
+
+volumes:
+  pgdata:
